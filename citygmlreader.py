@@ -1,5 +1,7 @@
+from pathlib import Path
+
 from vtk import vtkCityGMLReader
-from vtk import vtkJPEGReader
+from vtk import vtkImageReader2Factory
 from vtk import vtkTexture
 from vtkmodules.vtkRenderingCore import (
     vtkActor,
@@ -13,9 +15,10 @@ from vtkmodules.vtkRenderingCore import (
 class CityGMLReader:
 
     @staticmethod
-    def simulate(filePath):
+    def simulate(filePath, lod: int):
         """
         Reads the .gml file and processes it in a 3D Model window
+        :param lod: Level of detail
         :param filePath: Path to the .gml file
         :return: None
         """
@@ -38,7 +41,7 @@ class CityGMLReader:
         reader.SetFileName(filePath)
 
         # Specify the level of detail to read (0-4) [default - 3]
-        reader.SetLOD(2)
+        reader.SetLOD(lod)
 
         # Brings the reader up-to-date
         reader.Update()
@@ -75,23 +78,26 @@ class CityGMLReader:
                 if textureField:
                     textureURI = textureField.GetValue(0)
 
-                    # complete path to the texture file and read it as a jpeg
+                    # complete path to the texture file and read it as an image
                     path = filePath + '/' + textureURI
-                    JpegReader = vtkJPEGReader()
-                    JpegReader.SetFileName(path)
 
-                    # We create a texture object which handles the loading and binding if texture maps
-                    # We set the connection for the given input port index, this also removes  all other
-                    # connections from the port. To add the port we use GetOutputPort on the jpeg reader
-                    texture = vtkTexture()
-                    texture.SetInputConnection(JpegReader.GetOutputPort())
+                    if Path(path):
+                        createReader = vtkImageReader2Factory()
+                        imgReader = createReader.CreateImageReader2(path)
+                        imgReader.SetFileName(path)
 
-                    # turns the linear interpolation on. which means to estimate an unknown value from given
-                    # data assuming the curve is a straight line.
-                    texture.InterpolateOn()
+                        # We create a texture object which handles the loading and binding if texture maps
+                        # We set the connection for the given input port index, this also removes  all other
+                        # connections from the port. To add the port we use GetOutputPort on the image reader
+                        texture = vtkTexture()
+                        texture.SetInputConnection(imgReader.GetOutputPort())
 
-                    # set the texture of the current actor.
-                    actor.SetTexture(texture)
+                        # turns the linear interpolation on. which means to estimate an unknown value from given
+                        # data assuming the curve is a straight line.
+                        texture.InterpolateOn()
+
+                        # set the texture of the current actor.
+                        actor.SetTexture(texture)
 
             # iterate to the next block
             it.GoToNextItem()
