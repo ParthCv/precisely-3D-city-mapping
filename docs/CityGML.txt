@@ -1,0 +1,15 @@
+CityGML
+
+The CityGML City Geographic Markup Language, standard defines a conceptual model and exchange format for the
+representation, storage and exchange of virtual 3D city models. GML schema is also an XML-based format for the
+representation of virtual 3D models. It is implemented as an application schema of GML3. CityGML takes advantage of
+other open standards and its development has proceeded in careful cooperation with other groups. Development of
+CityGML began in 2002 by the members of the Special Interest Group 3D (SIG 3D) of the Geodata Infrastructure
+North-Rhine Westphalia (GDI NRW) initiative in Germany.
+
+CityGML represents the graphic appearance of city models and also the semantic or thematic properties, taxonomies and
+aggregations of digital terrain models, sites (including buildings, bridges and tunnels), vegetation, water bodies,
+transportation facilities, etc. The underlying model differentiates five consecutive levels of detail (LoD), where
+objects become more detailed with increasing LoD, both in geometry and thematic differentiation. CityGML is the result
+of a well-organized effort to bring together related standards through careful coordination with various standards
+groups and user groups.
