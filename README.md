@@ -2,7 +2,7 @@
 
 ## Overview
 
-This is a program that converts files containing 3D models of cities stored inside data models to 3D models. Currently 
+This is a program that reads files containing 3D models of cities stored inside data models and renders them into a 3D Window. Currently 
 the program can read only .xml and .gml files.
 
 ## Requirements

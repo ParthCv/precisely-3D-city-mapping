@@ -13,3 +13,5 @@ transportation facilities, etc. The underlying model differentiates five consecu
 objects become more detailed with increasing LoD, both in geometry and thematic differentiation. CityGML is the result
 of a well-organized effort to bring together related standards through careful coordination with various standards
 groups and user groups.
+
+Documentation - https://www.ogc.org/standards/citygml
