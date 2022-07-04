@@ -154,6 +154,7 @@ class CityGMLReader:
     @staticmethod
     def render_data(reader, ren, filePath):
         """
+        Render the blocks of data to the renderer.
 
         :param reader: the cityGML reader object
         :param ren: the vtk renderer object
