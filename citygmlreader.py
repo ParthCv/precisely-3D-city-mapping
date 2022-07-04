@@ -51,67 +51,8 @@ class CityGMLReader:
             # Brings the reader up-to-date
             reader.Update()
 
-            # multi block dataset - organizes a dataset into blocks
-            mb = reader.GetOutput()
-
-            # Create image reader factory object
-            createReader = vtkImageReader2Factory()
-
-            # Set an iterator to read over all the blocks in the dataset.
-            # And an object to always store current data object
-            it = mb.NewIterator()
-            obj = it.GetCurrentDataObject()
-
-            count = 0
-
-            while obj:
-                # This is a PolyData object which represents a geometric structure
-                # consisting of vertices, lines, polygons, and/or triangle strips
-                poly = it.GetCurrentDataObject()
-
-                if poly:
-                    count += 1
-                    # This mapper helps map the polygonal data to graphics primitives,
-                    # that are the basic objects for the creation of complex images.
-                    mapper = vtkPolyDataMapper()
-                    mapper.SetInputDataObject(poly)
-
-                    # Used to represent an object in a rendered scene. Set the mapper
-                    # to tha actor and add it to the renderer
-                    actor = vtkActor()
-                    actor.SetMapper(mapper)
-                    ren.AddActor(actor)
-
-                    # Retrieve the general field data and get the array with the name texture-uri,
-                    # which contains the path to the texture file.
-                    textureField = poly.GetFieldData().GetAbstractArray('texture_uri')
-                    if textureField:
-                        textureURI = textureField.GetValue(0)
-
-                        # complete path to the texture file and read it as an image
-                        strFilePath = os.path.dirname(os.path.abspath(str(filePath)))
-                        path = strFilePath + '/' + textureURI
-
-                        if os.path.isfile(path):
-                            imgReader = createReader.CreateImageReader2(path)
-                            imgReader.SetFileName(path)
-
-                            # We create a texture object which handles the loading and binding if texture maps
-                            # We set the connection for the given input port index, this also removes  all other
-                            # connections from the port. To add the port we use GetOutputPort on the image reader
-                            texture = vtkTexture()
-                            texture.SetInputConnection(imgReader.GetOutputPort())
-
-                            # turns the linear interpolation on. which means to estimate an unknown value from given
-                            # data assuming the curve is a straight line.
-                            texture.InterpolateOn()
-
-                            # set the texture of the current actor.
-                            actor.SetTexture(texture)
-
-                # iterate to the next block
-                it.GoToNextItem()
-                obj = it.GetCurrentDataObject()
+            # Call function to render the objets in the renderer
+            CityGMLReader.render_data(reader, ren, filePath)
 
             # Automatically sets up the camera based on the bound
             ren.ResetCamera()
@@ -178,71 +119,9 @@ class CityGMLReader:
                 # Brings the reader up-to-date
                 reader.Update()
 
-                # multi block dataset - organizes a dataset into blocks
-                mb = reader.GetOutput()
-
-                # Create image reader factory object
-                createReader = vtkImageReader2Factory()
-
-                # Set an iterator to read over all the blocks in the dataset.
-                # And an object to always store current data object
-                it = mb.NewIterator()
-                obj = it.GetCurrentDataObject()
-
-                # variables to count the number of polydata objects
-                count = 0
-
-                while obj:
-                    # This is a PolyData object which represents a geometric structure
-                    # consisting of vertices, lines, polygons, and/or triangle strips
-                    poly = it.GetCurrentDataObject()
-
-                    if poly:
-
-                        # Increment the count of poly data objects
-                        count += 1
-
-                        # This mapper helps map the polygonal data to graphics primitives,
-                        # that are the basic objects for the creation of complex images.
-                        mapper = vtkPolyDataMapper()
-                        mapper.SetInputDataObject(poly)
-
-                        # Used to represent an object in a rendered scene. Set the mapper
-                        # to tha actor and add it to the renderer
-                        actor = vtkActor()
-                        actor.SetMapper(mapper)
-                        ren.AddActor(actor)
-
-                        # Retrieve the general field data and get the array with the name texture-uri,
-                        # which contains the path to the texture file.
-                        textureField = poly.GetFieldData().GetAbstractArray('texture_uri')
-                        if textureField:
-                            textureURI = textureField.GetValue(0)
-
-                            # complete path to the texture file and read it as an image
-                            strFilePath = os.path.dirname(os.path.abspath(str(filePath)))
-                            path = strFilePath + '/' + textureURI
-
-                            if os.path.isfile(path):
-                                imgReader = createReader.CreateImageReader2(path)
-                                imgReader.SetFileName(path)
-
-                                # We create a texture object which handles the loading and binding if texture maps
-                                # We set the connection for the given input port index, this also removes  all other
-                                # connections from the port. To add the port we use GetOutputPort on the image reader
-                                texture = vtkTexture()
-                                texture.SetInputConnection(imgReader.GetOutputPort())
-
-                                # turns the linear interpolation on. which means to estimate an unknown value from given
-                                # data assuming the curve is a straight line.
-                                texture.InterpolateOn()
-
-                                # set the texture of the current actor.
-                                actor.SetTexture(texture)
-
-                    # iterate to the next block
-                    it.GoToNextItem()
-                    obj = it.GetCurrentDataObject()
+                # Call function to render the objets in the renderer and
+                # get the count of times it ran for the specific lod
+                count = CityGMLReader.render_data(reader, ren, filePath)
 
                 # Check if this lod had data if so break out of the loop
                 if count > 0:
@@ -271,3 +150,78 @@ class CityGMLReader:
         except Exception as e:
             print(f'Error: Something went wrong while processing the file.')
             print(e)
+
+    @staticmethod
+    def render_data(reader, ren, filePath):
+        """
+
+        :param reader: the cityGML reader object
+        :param ren: the vtk renderer object
+        :param filePath: the path to the 3D model
+        :return: the number of time the while loop executed
+        """
+
+        # multi block dataset - organizes a dataset into blocks
+        mb = reader.GetOutput()
+
+        # Create image reader factory object
+        createReader = vtkImageReader2Factory()
+
+        # Set an iterator to read over all the blocks in the dataset.
+        # And an object to always store current data object
+        it = mb.NewIterator()
+        obj = it.GetCurrentDataObject()
+
+        # variable to keep the count of times while loop ran
+        count = 0
+
+        while obj:
+            # This is a PolyData object which represents a geometric structure
+            # consisting of vertices, lines, polygons, and/or triangle strips
+            poly = it.GetCurrentDataObject()
+
+            if poly:
+                count += 1
+                # This mapper helps map the polygonal data to graphics primitives,
+                # that are the basic objects for the creation of complex images.
+                mapper = vtkPolyDataMapper()
+                mapper.SetInputDataObject(poly)
+
+                # Used to represent an object in a rendered scene. Set the mapper
+                # to tha actor and add it to the renderer
+                actor = vtkActor()
+                actor.SetMapper(mapper)
+                ren.AddActor(actor)
+
+                # Retrieve the general field data and get the array with the name texture-uri,
+                # which contains the path to the texture file.
+                textureField = poly.GetFieldData().GetAbstractArray('texture_uri')
+                if textureField:
+                    textureURI = textureField.GetValue(0)
+
+                    # complete path to the texture file and read it as an image
+                    strFilePath = os.path.dirname(os.path.abspath(str(filePath)))
+                    path = strFilePath + '/' + textureURI
+
+                    if os.path.isfile(path):
+                        imgReader = createReader.CreateImageReader2(path)
+                        imgReader.SetFileName(path)
+
+                        # We create a texture object which handles the loading and binding if texture maps
+                        # We set the connection for the given input port index, this also removes  all other
+                        # connections from the port. To add the port we use GetOutputPort on the image reader
+                        texture = vtkTexture()
+                        texture.SetInputConnection(imgReader.GetOutputPort())
+
+                        # turns the linear interpolation on. which means to estimate an unknown value from given
+                        # data assuming the curve is a straight line.
+                        texture.InterpolateOn()
+
+                        # set the texture of the current actor.
+                        actor.SetTexture(texture)
+
+            # iterate to the next block
+            it.GoToNextItem()
+            obj = it.GetCurrentDataObject()
+
+        return count
