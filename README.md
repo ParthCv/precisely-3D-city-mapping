@@ -1,4 +1,4 @@
-# CityGML Mapping
+# 3D City Mapping
 
 ## Overview
 
@@ -19,7 +19,7 @@ git clone https://github.com/ParthCv/precisely-CityGML-mapping.git
 2. Opem the terminal inside the project
 3. Run the following command to run the program
 ```bash
-python main.py data/twobuildings.city.gml --lod 2
+python driver.py data/twobuildings.city.gml --lod 2
 ```
 ## Commandline Arguments
 
