@@ -1,5 +1,9 @@
 import argparse
 import filereaderfactory
+import sys
+import os
+
+sys.path.append(os.path.dirname(__file__))
 
 
 def setup_commandline_request():

@@ -1,6 +1,7 @@
 import os.path
 from pathlib import Path
 from citygmlreader import CityGMLReader
+from cityjsonreader import CityJSONReader
 
 
 class FileReaderFactory:
@@ -12,7 +13,7 @@ class FileReaderFactory:
             split_tup = os.path.splitext(filePath)
             # extract the file extension
             file_extension = split_tup[1]
-            validFileTypes = ['.gml', '.xml']
+            validFileTypes = ['.gml', '.xml', '.json']
             if file_extension == '.gml' or file_extension == '.xml':
                 try:
                     if lod is None:
@@ -22,6 +23,8 @@ class FileReaderFactory:
                 except Exception as e:
                     print(f'Error: Something went wrong while reading the file.')
                     print(e)
+            elif file_extension == '.json':
+                CityJSONReader.simulate(filePath, lod)
             else:
                 print(f'Error: Invalid file extension!')
                 print(f'Allowed file types {validFileTypes}')
