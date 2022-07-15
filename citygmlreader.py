@@ -1,5 +1,4 @@
 import os.path
-
 import vtk
 from vtk import vtkCityGMLReader
 from vtk import vtkImageReader2Factory
@@ -41,6 +40,8 @@ class CityGMLReader:
         iren.SetRenderWindow(renWin)
 
         try:
+            print(f"Reading {filePath} file")
+
             # Initialize the CityGML reader and set the file path
             reader = vtkCityGMLReader()
             reader.SetFileName(filePath)
@@ -106,12 +107,15 @@ class CityGMLReader:
         lodOrder = [3, 1, 2, 4]
 
         try:
+            print(f"Reading {filePath} file")
+
             # Initialize the CityGML reader and set the file path
             reader = vtkCityGMLReader()
             reader.SetFileName(filePath)
 
             # Loop through all level of details until correct one is found
             for lod in lodOrder:
+                print(f"Trying with lod {lod}")
 
                 # Specify the level of detail to read (0-4) [default - 3]
                 reader.SetLOD(lod)
@@ -125,6 +129,7 @@ class CityGMLReader:
 
                 # Check if this lod had data if so break out of the loop
                 if count > 0:
+                    print(f"Data found on lod {lod}")
                     break
 
             # Automatically sets up the camera based on the bound

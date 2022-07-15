@@ -14,9 +14,10 @@ def setup_commandline_request():
     parser = argparse.ArgumentParser(description='Process a 3D Model.')
     parser.add_argument("filepath", help='a 3D model file')
     parser.add_argument("--lod", help='level of detail', nargs='?', choices=range(5), type=int)
+    parser.add_argument("--force", help='force file conversion, default is false', action='store_true')
 
     args = parser.parse_args()
-    filereaderfactory.FileReaderFactory.factory(args.filepath, args.lod)
+    filereaderfactory.FileReaderFactory.factory(args.filepath, args.lod, args.force)
 
 
 def main():
