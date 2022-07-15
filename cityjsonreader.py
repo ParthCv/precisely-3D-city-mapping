@@ -12,13 +12,14 @@ class CityJSONReader:
         Validates and then converts a CityJSON file to a gml file and then renders the new gml file
         :param filePath: Path to a json file
         :param lod: level of detail
+        :param force: force overwriting a file
         :return: None
         """
 
         print(f"Reading {filePath} file.")
 
         # Path to the city gml tool executable file to convert the file
-        city_gml_tool_path = 'citygml-tools-1.4.5\\citygml-tools.bat'
+        city_gml_tool_path = os.path.dirname(__file__) + '\\citygml-tools-1.4.5\\citygml-tools.bat'
 
         split_tup = os.path.splitext(filePath)
         # extract the file name
@@ -40,10 +41,7 @@ class CityJSONReader:
 
                 # Run the command to convert the file
                 subprocess.run(
-                    [city_gml_tool_path, 'from-cityjson', os.path.abspath(str(filePath))],
-                    capture_output=True,
-                    text=True,
-                    shell=True,
+                    [city_gml_tool_path, 'from-cityjson', os.path.abspath(str(filePath))]
                 )
 
                 # Check the file and render the gml file

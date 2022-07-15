@@ -131,6 +131,7 @@ class CityGMLReader:
                 if count > 0:
                     print(f"Data found on lod {lod}")
                     break
+                print(f"No Data found on lod {lod}")
 
             # Automatically sets up the camera based on the bound
             ren.ResetCamera()
