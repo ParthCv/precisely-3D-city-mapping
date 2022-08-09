@@ -69,7 +69,7 @@ class MyAddin():
             vFile['Name'] = 'File'
             vFile['Type'] = 'File'
             vFile['Prompt'] = '_File:'
-            vFile['Extension'] = 'GML,XML,JSON'
+            vFile['Extension'] = 'GML'
 
             lods  = List[String]()
             lods.Add('Auto')
