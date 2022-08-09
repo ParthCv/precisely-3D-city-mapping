@@ -19,7 +19,23 @@ from vtkmodules.vtkRenderingCore import (
     vtkRenderer,
     vtkPolyDataMapper
 )
+import os.path
 
+def __runcommand__(command):
+    try:
+        p = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, encoding='utf8', shell=True)
+        p.wait()
+        stdout, stderr = p.communicate()
+        if p.returncode == 0:
+            if stdout:
+                for line in stdout.strip().split("\n"):
+                    print(line)
+        elif p.returncode != 0:
+            if stderr:
+                for line in stderr.strip().split("\n"):
+                    print(line)
+    except Exception as e:
+        print(e)
 
 class CityGMLQTDialog(QDialog):
     def __init__(self, pro, city_gml_file, lod, force, *args, **kwargs):
@@ -193,7 +209,7 @@ class CityGMLQTDialog(QDialog):
         print(f"Reading {self._city_gml_file} file.")
 
         # Path to the city gml tool executable file to convert the file
-        city_gml_tool_path = os.path.dirname(__file__) + '\\citygml-tools-1.4.5\\citygml-tools.bat'
+        city_gml_tool_path = os.path.dirname(__file__) + '.\\citygml-tools-1.4.5\\citygml-tools.bat'
 
         split_tup = os.path.splitext(self._city_gml_file)
         # extract the file name
@@ -201,6 +217,7 @@ class CityGMLQTDialog(QDialog):
 
         # The file path to new gml file
         self._city_gml_file = Path(file_name + '.gml')
+        file_name = Path(file_name + '.json')
         print()
         # check for existing file
         if self._city_gml_file.is_file() and not self._force:
@@ -211,12 +228,11 @@ class CityGMLQTDialog(QDialog):
                 self.readCityGMLWithLod()
         else:
             try:
-                print(f"Converting {self._city_gml_file} to a gml file.")
+                print(f"Converting {file_name} to a gml file.")
 
+                
                 # Run the command to convert the file
-                subprocess.run(
-                    [city_gml_tool_path, 'from-cityjson', os.path.abspath(str(self._city_gml_file))]
-                )
+                __runcommand__([city_gml_tool_path, 'from-cityjson', os.path.abspath(str(file_name))])
 
                 # Check the file and render the gml file
                 if self._city_gml_file.is_file():
