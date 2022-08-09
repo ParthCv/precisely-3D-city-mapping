@@ -1,4 +1,5 @@
 import os
+import os.path
 import subprocess
 from pathlib import Path
 
@@ -18,8 +19,6 @@ from vtkmodules.vtkRenderingCore import (
     vtkRenderer,
     vtkPolyDataMapper
 )
-import os.path
-
 
 
 class CityGMLQTDialog(QDialog):
@@ -31,8 +30,7 @@ class CityGMLQTDialog(QDialog):
         self._city_gml_file = city_gml_file
         self._lod = int(lod) if str(lod).isdigit() else None
         self._force = force
-        # self.ren = vtkRenderer()
-        # self.iren = self.vtkWidget.GetRenderWindow().GetInteractor()
+
         self.setWindowFlag(Qt.WindowContextHelpButtonHint, False)
         self.setWindowTitle("3D Surfaces")
         self.resize(500, 500)
@@ -189,9 +187,6 @@ class CityGMLQTDialog(QDialog):
     def convertCityJSONtoCityGML(self):
         """
         Validates and then converts a CityJSON file to a gml file and then renders the new gml file
-        :param filePath: Path to a json file
-        :param lod: level of detail
-        :param force: force overwriting a file
         :return: None
         """
 
@@ -310,50 +305,7 @@ class CityGMLQTDialog(QDialog):
 
         return count
 
-    def load3DData(self):
-        self.ren = vtkRenderer()
-        self.ren.SetBackground(255, 255, 255)
-        self.vtkWidget.GetRenderWindow().AddRenderer(self.ren)
-        self.iren = self.vtkWidget.GetRenderWindow().GetInteractor()
-
-        # Read all the data from the file
-        reader = vtkCityGMLReader()
-        reader.SetFileName(self._city_gml_file)
-        reader.Update()
-        dirName = os.path.dirname(self._city_gml_file)
-        mb = reader.GetOutput()
-        it = mb.NewIterator()
-        readerFactory = vtkImageReader2Factory()
-        while (not it.IsDoneWithTraversal()):
-            poly = it.GetCurrentDataObject()
-            if poly:
-                mapper = vtkPolyDataMapper()
-                mapper.SetInputDataObject(poly)
-                actor = vtkActor()
-                actor.SetMapper(mapper)
-                self.ren.AddActor(actor)
-                texture = poly.GetFieldData().GetAbstractArray("texture_uri")
-                if texture:
-                    textureURI = texture.GetValue(0)
-                    textureFile = dirName + "/" + textureURI
-                    if os.path.isfile(textureFile):
-                        imageReader = readerFactory.CreateImageReader2(textureFile)
-                        imageReader.SetFileName(textureFile)
-                        imageReader.Update()
-                        texture = vtkTexture()
-                        texture.SetInputConnection(imageReader.GetOutputPort())
-                        texture.InterpolateOn()
-                        actor.SetTexture(texture)
-
-            it.GoToNextItem()
-
-        self.ren.ResetCamera()
-        self.ren.GetActiveCamera().Azimuth(80)
-        self.ren.GetActiveCamera().Roll(-90)
-        self.iren.Initialize()
-        self.iren.Start()
-
-    def showdialog(self, proHwnd):
+    def showDialog(self, proHwnd):
         self.factory()
         self.show()
         # Get QT Dialog handle

@@ -9,6 +9,7 @@ import os
 from System import String, Object, Int32
 from System.Collections.Generic import List
 from os.path import join, dirname
+
 os.environ['QT_USE_NATIVE_WINDOWS'] = "1"
 
 # uncomment these lines to debug the python script using VSCODE
@@ -28,6 +29,7 @@ from MapInfo.Types import MapInfoDictionary
 
 # redirect python stdio to Pro
 sys.stdout = sys.stderr = sys.stdin = MessageOutput()
+
 
 # TODO: change your addin class name here.
 class MyAddin():
@@ -57,11 +59,12 @@ class MyAddin():
                     self._newButton.KeyTip = "OS"
                     self._newButton.Command = AddinUtil.create_command(self.on_open_dialog_qt_click, None)
                     self._newButton.KeyGesture = "Alt+Shift+S"
-                    self._newButton.LargeIcon = CommonUtil.path_to_uri("pack://application:,,,/MapInfo.StyleResources;component/Images/Mapping/new3DMap_32x32.png")
-                    self._newButton.SmallIcon = CommonUtil.path_to_uri("pack://application:,,,/MapInfo.StyleResources;component/Images/Mapping/new3DMap_16x16.png")
-                    self._newButton.ToolTip = AddinUtil.create_tooltip("Open 3d Surfaces", "Open 3d Surfaces", "Always Enabled.")
-
-
+                    self._newButton.LargeIcon = CommonUtil.path_to_uri(
+                        "pack://application:,,,/MapInfo.StyleResources;component/Images/Mapping/new3DMap_32x32.png")
+                    self._newButton.SmallIcon = CommonUtil.path_to_uri(
+                        "pack://application:,,,/MapInfo.StyleResources;component/Images/Mapping/new3DMap_16x16.png")
+                    self._newButton.ToolTip = AddinUtil.create_tooltip("Open 3d Surfaces", "Open 3d Surfaces",
+                                                                       "Always Enabled.")
 
     def on_open_dialog_qt_click(self, sender):
         try:
@@ -71,7 +74,7 @@ class MyAddin():
             vFile['Prompt'] = '_File:'
             vFile['Extension'] = 'GML,XML,JSON'
 
-            lods  = List[String]()
+            lods = List[String]()
             lods.Add('Auto')
             lods.Add('0')
             lods.Add('1')
@@ -103,10 +106,9 @@ class MyAddin():
                 qtdlg = CityGMLQTDialog(pro=self._pro, city_gml_file=vFile['Value'], lod=vValues['Value'],
                                         force=vLogical['Value'] == 'True')
 
-                qtdlg.showdialog(proHwnd)
+                qtdlg.showDialog(proHwnd)
         except Exception as e:
             print("Error: {}".format(e))
-
 
     def unload(self):
         if self._newButton:
@@ -118,12 +120,12 @@ class MyAddin():
 
         if self._qtapp:
             self._qtapp.exit()
-        
+
         self._qtapp = None
         self._newButton = None
         self._thisApplication = None
         self._pro = None
-        
+
 
 # this class is needed with same name in order to load the python addin and can be copied 
 # as it is when creating another addin.
@@ -150,7 +152,7 @@ class main():
                 self._addin = MyAddin(self._imapinfopro, thisApplication)
         except Exception as e:
             print("Failed to load: {}".format(e))
-    
+
     def unload(self):
         try:
             if self._addin:
@@ -159,7 +161,7 @@ class main():
             self._addin = None
         except Exception as e:
             print("Failed to unload: {}".format(e))
-    
+
     def __del__(self):
         self._imapinfopro = None
         pass
@@ -173,7 +175,7 @@ class main():
     def addin_description(self) -> str:
         # TODO: change here
         return "Python Add-in Description"
-    
+
     # optional -- default command text in  tool manager
     def addin_defaultcommandtext(self) -> str:
         # TODO: change here
