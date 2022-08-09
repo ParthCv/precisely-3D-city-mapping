@@ -48,7 +48,6 @@ class CityGMLQTDialog(QDialog):
         self._lod = int(lod) if str(lod).isdigit() else None
         self._force = force
 
-        print(force)
         self.setWindowFlag(Qt.WindowContextHelpButtonHint, False)
         self.setWindowTitle("3D Surfaces")
         self.resize(500, 500)
@@ -321,6 +320,7 @@ class CityGMLQTDialog(QDialog):
         return count
 
     def showDialog(self, proHwnd):
+        # Call the file factory function
         self.factory()
         self.show()
         # Get QT Dialog handle

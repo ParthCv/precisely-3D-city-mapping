@@ -103,7 +103,6 @@ class MyAddin():
                 # for v in variables:
                 #     print('{} {}'.format(v['Prompt'], v['Value']))
                 proHwnd = self._pro.MainHwnd.ToInt32()
-                print(f"Before:{vLogical['Value']}")
                 qtdlg = CityGMLQTDialog(pro=self._pro, city_gml_file=vFile['Value'], lod=vValues['Value'],
                                         force=bool(vLogical['Value']))
 
