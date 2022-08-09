@@ -19,7 +19,7 @@ from vtkmodules.vtkRenderingCore import (
     vtkRenderer,
     vtkPolyDataMapper
 )
-import os.path
+
 
 def __runcommand__(command):
     try:
@@ -37,6 +37,7 @@ def __runcommand__(command):
     except Exception as e:
         print(e)
 
+
 class CityGMLQTDialog(QDialog):
     def __init__(self, pro, city_gml_file, lod, force, *args, **kwargs):
         super(CityGMLQTDialog, self).__init__(*args, **kwargs)
@@ -47,6 +48,7 @@ class CityGMLQTDialog(QDialog):
         self._lod = int(lod) if str(lod).isdigit() else None
         self._force = force
 
+        print(force)
         self.setWindowFlag(Qt.WindowContextHelpButtonHint, False)
         self.setWindowTitle("3D Surfaces")
         self.resize(500, 500)
@@ -98,7 +100,6 @@ class CityGMLQTDialog(QDialog):
         # Turn off all the warnings.
         vtk.vtkObject.GlobalWarningDisplayOff()
 
-        self.ren.SetBackground(255, 255, 255)
         self.vtkWidget.GetRenderWindow().AddRenderer(self.ren)
         self.iren = self.vtkWidget.GetRenderWindow().GetInteractor()
         # The renderer renders into the render window. And set the background.
@@ -146,7 +147,6 @@ class CityGMLQTDialog(QDialog):
         # Turn off all the warnings.
         vtk.vtkObject.GlobalWarningDisplayOff()
 
-        self.ren.SetBackground(255, 255, 255)
         self.vtkWidget.GetRenderWindow().AddRenderer(self.ren)
         self.iren = self.vtkWidget.GetRenderWindow().GetInteractor()
         # The renderer renders into the render window. And set the background.
@@ -230,7 +230,6 @@ class CityGMLQTDialog(QDialog):
             try:
                 print(f"Converting {file_name} to a gml file.")
 
-                
                 # Run the command to convert the file
                 __runcommand__([city_gml_tool_path, 'from-cityjson', os.path.abspath(str(file_name))])
 
