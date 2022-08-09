@@ -3,6 +3,7 @@ import subprocess
 from pathlib import Path
 
 os.environ['QT_USE_NATIVE_WINDOWS'] = "1"
+from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QDialog, QVBoxLayout
 from vtkmodules.qt.QVTKRenderWindowInteractor import QVTKRenderWindowInteractor
 import win32.win32gui
@@ -46,6 +47,7 @@ class CityGMLQTDialog(QDialog):
         self._force = force
         # self.ren = vtkRenderer()
         # self.iren = self.vtkWidget.GetRenderWindow().GetInteractor()
+        self.setWindowFlag(Qt.WindowContextHelpButtonHint, False)
         self.setWindowTitle("3D Surfaces")
         self.resize(500, 500)
 
