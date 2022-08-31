@@ -2,7 +2,7 @@
 
 ## Overview
 
-This is a program that reads files containing 3D models of cities stored inside data models and renders them into a 3D Window. Current 
+This is a commandline tool and MapInfo Pro add-in that reads files containing 3D models of cities stored inside data models and renders them into a 3D Window. Current 
 program can read only .xml and .city.gml files. For .city.json files, the program first converts the file to a GML file and then renders
 the file into the window.
 
